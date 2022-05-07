@@ -1,0 +1,33 @@
+.countries {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-rows: min-content;
+  grid-gap: 5vh 5vw;
+  padding: 6px 6% 3%;
+  overflow-y: overlay;
+
+}
+
+.country {
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+
+  &-info {
+    padding: 0 24px 12px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.8em;
+  }
+
+  &-name {
+    margin: 8px 0;
+    font-size: 18px;
+  }
+}
+
+.flag {
+  width: 100%;
+  height: 200px;
+  object-fit: fill;
+}

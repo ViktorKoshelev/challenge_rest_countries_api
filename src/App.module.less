@@ -1,0 +1,166 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6%;
+  box-shadow: 0px 0px 8px 0px hsl(0deg 0% 90%);
+}
+
+h2 {
+  line-height: 2.4rem;
+}
+
+.page {
+  font-family: 'Nunito Sans', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 3rem 6% 0;
+}
+
+.tumbler {
+  font-weight: 600;
+  display: flex;
+  cursor: pointer;
+}
+
+.dark-element {
+  background-color: hsl(209, 23%, 22%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: 0px 0px 8px 0px hsl(0deg 0% 10%);
+}
+
+.dark-background {
+  background-color: hsl(207, 26%, 17%);
+}
+
+.light-input {
+  color: hsl(0, 0%, 52%);
+}
+
+.light-background {
+  background-color: hsl(0, 0%, 98%);
+}
+
+.light-element {
+  background-color: hsl(0, 0%, 100%);
+  color: hsl(200, 15%, 8%);
+  box-shadow: 0px 0px 8px 0px hsl(0deg 0% 90%);
+}
+
+.icon-aria() {
+  position: absolute;
+  height: 100%;
+  pointer-events: none;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+
+  &-dark {
+    fill: white;
+  }
+
+  &-light {
+    fill: black;
+  }
+
+  &-search {
+    .icon-aria();
+    left: 30px;
+  }
+
+  &-expander {
+    .icon-aria();
+    width: 12px;
+    right: 10px;
+  }
+
+  &-back {
+    .icon-aria();
+    left: 10px;
+  }
+}
+
+.input() {
+  border: none;
+  border-radius: 6px;
+  outline: none;
+
+  &:active,
+  &:focus,
+  &:hover {
+    box-shadow: 0px 0px 8px 0px lightblue;
+  }
+}
+
+.search {
+  width: 100%;
+  height: 55px;
+  text-indent: 70px;
+  .input();
+
+  &-container {
+    position: relative;
+    flex-shrink: 1;
+    flex-basis: 475px;
+    margin-bottom: 3rem;
+    margin-right: 6%;
+  }
+}
+
+.search::placeholder {
+  font-family: "Nunito Sans";
+  font-weight: 600;
+  font-size: 14px;
+  color: hsl(0, 0%, 52%);
+}
+
+.region {
+  .input();
+  appearance: none;
+  width: 200px;
+  height: 57px;
+  height: 100%;
+  padding: 0 20px;
+  font-family: "Nunito Sans";
+  font-weight: 600;
+  outline: none;
+
+  option {
+    line-height: 20px;
+    ;
+  }
+
+  &-container {
+    position: relative;
+  }
+}
+
+main {
+  height: 100%;
+  flex-shrink: 1;
+  min-height: 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  color: inherit;
+  text-decoration: inherit;
+  border-radius: 6px;
+
+  &:active,
+  &:focus,
+  &:hover {
+    box-shadow: 0px 0px 8px 0px lightblue;
+  }
+}
