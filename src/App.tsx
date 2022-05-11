@@ -20,6 +20,7 @@ const App = observer(() => {
           <header className={`${styles[Theme + '-element']} ${styles.header}`}>
             <h2 className={styles.h2}>Where in the world?</h2>
             <div
+              data-testid='switcher'
               onClick={Theme.toggleTheme}
               className={`${styles.tumbler} ${styles[Theme + '-text']}`}>
               <svg className={`${styles.icon} ${styles['icon-' + Theme]}`} xmlns="http://www.w3.org/2000/svg">

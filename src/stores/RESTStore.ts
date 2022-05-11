@@ -98,4 +98,8 @@ export default class RESTStore {
   get isEmptyCountryList(): boolean {
     return !this.countryList.length && !this.isLoading;
   }
+
+  get isAll(): boolean {
+    return this.allCountries === this.countryList && !this.isLoading;
+  }
 }

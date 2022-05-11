@@ -63,11 +63,11 @@ const Countries = observer(() => {
     , [store]);
 
   useEffect(() => {
-    if (store.isEmptyCountryList) {
+    if (!store.isAll) {
       store.getAllCountries()
         .then(store.setCountryList)
     }
-  }, [store.isEmptyCountryList, store]);
+  }, []);
 
   return (<>
     <section className={commonStyles.filter}>
@@ -75,17 +75,22 @@ const Countries = observer(() => {
         <svg className={`${commonStyles.icon} ${commonStyles['icon-search']} ${commonStyles['icon-' + Theme]}`} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <use href="/src/icons.svg#search"></use>
         </svg>
-        <input onChange={onChangeSearch} className={`${commonStyles.search} ${commonStyles[Theme + '-element']}`} placeholder='Search for a country...'></input>
+        <input
+          data-testid='search'
+          onChange={onChangeSearch}
+          className={`${commonStyles.search} ${commonStyles[Theme + '-element']}`}
+          placeholder='Search for a country...' />
       </div>
 
       <Select
+        data-testid='regions'
         className={`${styles[Theme + '-element']}`}
         placeholder="Filter by Region"
         options={options}
         styles={customStyles}
         onChange={onChangeRegion} />
     </section>
-    <section className={styles.countries}>
+    <section className={styles.countries} data-testid='grid'>
       {store.error
         ? <div>Something gone wrong</div>
         : (store.isLoading
