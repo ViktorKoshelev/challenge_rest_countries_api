@@ -1,13 +1,15 @@
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import RESTContext from './RESTContext';
-import RESTStore from './stores/RESTStore';
 import commonStyles from './App.module.less';
 import styles from './Country.module.less';
-import Theme from './stores/ThemeStore';
+import { selectTheme } from './stores/ThemeSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectREST, selectIsEmptyCountryList, getCountryByCode } from './stores/RESTSlice';
+import { getAllCountries, getCountry } from './stores/RESTSaga';
 
-const CountryContent = observer(({ content, store }: any) => {
+const CountryContent = ({ content, store }: any) => {
+  const Theme = useSelector(selectTheme);
   const {
     name,
     population,
@@ -65,8 +67,8 @@ const CountryContent = observer(({ content, store }: any) => {
             <b>Border Countries:</b>
             {
               borders
-                .map((key: string) => store.getCountryByCode(key))
-                .filter((obj: object) => obj.hasOwnProperty('cca3'))
+                  .map((key: string) => getCountryByCode(store, key))
+                  .filter((obj: object) => obj)
                 .map(({ cca3, name }: any) =>
                   <Link key={cca3} to={'/' + cca3} className={`${commonStyles.link} ${styles.border}`}>
                     <div className={`${styles.button} ${commonStyles[Theme + '-element']}`}>
@@ -80,36 +82,46 @@ const CountryContent = observer(({ content, store }: any) => {
       </div>
     </div>
   </>);
-});
+};
 
-const Country = observer(() => {
-  const store = useContext<RESTStore>(RESTContext);
+const Country = () => {
+  const store = useSelector(selectREST);
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (store.isLoading) {
+    if (!store.allCountries.length) {
+      dispatch(getAllCountries());
+    }
+  }, [])
+
+  const isSetCountry = store.countryList[0] && store.countryList[0].cca3 === id && store.countryList.length === 1;
+
+  useEffect(() => {
+    if (store.isLoading || isSetCountry) {
       return;
     }
-    store.country = id;
-  }, [store.isLoading, id]);
+    dispatch(getCountry(id));
+  }, [store.isLoading, id, isSetCountry]);
+
+  const isNotExistCountry = store.allCountries.length && !getCountryByCode(store, id);
 
   useEffect(() => {
-    if (store.isEmptyCountryList) {
+    if (isNotExistCountry) {
       navigate('/');
-      store.country = '';
     }
-  }, [store.isEmptyCountryList]);
+  }, [isNotExistCountry]);
 
   return (
     <section className={styles.content}>
       {store.isLoading
         ? <div> Loading... </div>
-        : store.countryList.length
+        : isSetCountry
           ? <CountryContent content={store.countryList[0]} store={store} />
           : null}
     </section>
   );
-})
+};
 
 export default Country;

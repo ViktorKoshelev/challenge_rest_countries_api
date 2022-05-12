@@ -1,13 +1,14 @@
 import commonStyles from './App.module.less';
 import styles from './Countries.module.less';
 import Select, { SingleValue } from 'react-select';
-import RESTStore from './stores/RESTStore';
 import { observer } from "mobx-react-lite"
-import { ReactEventHandler, SyntheticEvent, useCallback, useContext, useEffect } from 'react';
+import { ReactEventHandler, SyntheticEvent, useCallback, useContext, useEffect, useMemo } from 'react';
 import debounce from 'debounce';
-import RESTContext from './RESTContext';
 import { Link } from 'react-router-dom';
-import Theme from './stores/ThemeStore';
+import { selectTheme } from './stores/ThemeSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectREST, selectIsAll } from './stores/RESTSlice';
+import { getAll, getRegion, search } from './stores/RESTSaga';
 
 const options = [
   { value: 'Africa', label: 'Africa' },
@@ -22,50 +23,53 @@ background-color: hsl(0, 0%, 100%);
   color: hsl(200, 15%, 8%);
   box-shadow: 0px 0px 8px 0px hsl(0deg 0% 90%);
 */
-const customStyles = {
-  control: (provided: any) => ({
-    ...provided,
-    // none of react-select's styles are passed to <Control />
-    width: 170,
-    height: 57,
-    marginBottom: '3rem',
-    color: Theme.toString() === 'light' ? 'black' : 'white',
-    backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
-    boxShadow: Theme.toString() === 'light' ? '0px 0px 8px 0px hsl(0deg 0% 90%)' : '0px 0px 8px 0px hsl(0deg 0% 10%)',
 
-  }),
-  menu: (provided: any) => ({
-    ...provided,
-
-    color: Theme.toString() === 'light' ? 'black' : 'white',
-    backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
-  })
-  ,
-  singleValue: (provided: any) => ({
-    ...provided,
-
-    color: Theme.toString() === 'light' ? 'black' : 'white',
-    backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
-  })
-}
 
 const Countries = observer(() => {
-  const store = useContext<RESTStore>(RESTContext);
+  const Theme = useSelector(selectTheme);
+  const dispatch = useDispatch();
+  const store = useSelector(selectREST);
+  const isAll = useSelector(selectIsAll);
+
+  const customStyles = useMemo(() => ({
+    control: (provided: any) => ({
+      ...provided,
+      // none of react-select's styles are passed to <Control />
+      width: 170,
+      height: 57,
+      marginBottom: '3rem',
+      color: Theme.toString() === 'light' ? 'black' : 'white',
+      backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
+      boxShadow: Theme.toString() === 'light' ? '0px 0px 8px 0px hsl(0deg 0% 90%)' : '0px 0px 8px 0px hsl(0deg 0% 10%)',
+
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+
+      color: Theme.toString() === 'light' ? 'black' : 'white',
+      backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+
+      color: Theme.toString() === 'light' ? 'black' : 'white',
+      backgroundColor: Theme.toString() === 'light' ? 'white' : 'hsl(209, 23%, 22%)',
+    })
+  }), [Theme])
 
   const onChangeRegion = useCallback(({ value }: SingleValue<{ value: string, label: string }>) => {
-    store.region = value;
-  }, [store]);
+    dispatch(getRegion(value));
+  }, [dispatch]);
 
   const onChangeSearch: ReactEventHandler = useCallback(
     debounce(({ target }: SyntheticEvent) => {
-      store.search = (target as HTMLInputElement).value;
+      dispatch(search((target as HTMLInputElement).value));
     }, 300)
-    , [store]);
+    , [dispatch]);
 
   useEffect(() => {
-    if (!store.isAll) {
-      store.getAllCountries()
-        .then(store.setCountryList)
+    if (!isAll) {
+      dispatch(getAll())
     }
   }, []);
 
